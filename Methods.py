@@ -105,41 +105,6 @@ class Methods:
 
         return pred, kwargs
 
-    def RP_CNN2(self, *args, **kwargs):
-        feats = kwargs['feats']
-        k1 = kwargs['k1']
-        k2 = kwargs['k2']
-        k3 = kwargs['k3']
-
-        clear_session()
-        model = Sequential()
-        model.add(Conv2D(filters=kwargs['f1'], kernel_size=(k1, k1), activation='relu', padding='valid',
-                         input_shape=(8, 8, len(feats))))
-        model.add(Conv2D(filters=kwargs['f2'], kernel_size=(k2, k2), activation='relu', padding='valid'))
-        model.add(Conv2D(filters=kwargs['f3'], kernel_size=(k3, k3), activation='relu', padding='valid'))
-        model.add(Flatten())
-        model.add(Dense(100))
-        model.add(Dense(1))
-
-        model.compile(loss=mean_squared_error,
-                      optimizer=Adam(),
-                      metrics=['mse'])
-        model.fit(
-            self.X_rp[:52, :, :, feats], self.y[:52],
-            batch_size=12,
-            epochs=kwargs['e'],
-            verbose=0,
-            # validation_data=(self.X_rp[52:], self.y[52:]),
-            shuffle=True,
-
-            # callbacks=[PlotLossesKeras()]
-        )
-
-        pred = model.predict(self.X_pred[:, :, :, feats], verbose=0)
-        pred = pred * (self.y_max - self.y_min) + self.y_min
-
-        return pred, kwargs
-
     def LR(self, *args, **kwargs):
         feats = kwargs['feats']
         # LINEAR REGRESSION
